@@ -13,7 +13,7 @@ function App() {
 
     function getTrendingNews() {
 
-      axios.get(`http://api.mediastack.com/v1/news?access_key=f11c1c749f1417d1a64194720c56f082`)
+      axios.get(`https://api.mediastack.com/v1/news?access_key=f11c1c749f1417d1a64194720c56f082`)
       .then(res => {
         // Filter out articles with missing title, description, or image
         const filteredData = res.data.data.filter(item => 
@@ -38,7 +38,7 @@ function App() {
     e.preventDefault();
     setIsLoading(true);
 
-    axios.get(`http://api.mediastack.com/v1/news?access_key=f11c1c749f1417d1a64194720c56f082&keywords=${query}`)
+    axios.get(`https://api.mediastack.com/v1/news?access_key=f11c1c749f1417d1a64194720c56f082&keywords=${query}`)
       .then(res => {
         // Filter out articles with missing title, description, or image
         const filteredData = res.data.data.filter(item => 
