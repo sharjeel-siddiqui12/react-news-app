@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from 'axios';
 import moment from 'moment';
 
@@ -13,8 +13,11 @@ function App() {
 
     axios.get(`https://newsapi.org/v2/everything?q=${query}&apiKey=213f155b4dc84b68a2bbc6392211da8b`)
       .then(res => {
-        console.log(res.data.articles);
-        setData(res.data.articles);
+        // Filter out articles with missing title, description, or image
+        const filteredData = res.data.articles.filter(item => 
+          item.title && item.description && item.urlToImage
+        );
+        setData(filteredData);
         setIsLoading(false);
       })
       .catch(err => {
@@ -24,26 +27,45 @@ function App() {
   };
 
   return (
-    <div>
-      <h1>News</h1>
-      <input 
-        type="text" 
-        value={query} 
-        onChange={(e) => setQuery(e.target.value)} 
-        placeholder="Search for news"
-      />
-      <button onClick={getNews}>Search</button>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10">
+      <h1 className="text-4xl font-bold text-blue-600 mb-8">News Search</h1>
+      
+      <form className="w-full max-w-lg mb-10" onSubmit={getNews}>
+        <div className="flex items-center border-b border-blue-500 py-2">
+          <input 
+            type="text" 
+            value={query} 
+            onChange={(e) => setQuery(e.target.value)} 
+            placeholder="Search for news..."
+            className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+          />
+          <button 
+            type="submit" 
+            className="flex-shrink-0 bg-blue-500 hover:bg-blue-700 border-blue-500 hover:border-blue-700 text-sm border-4 text-white py-1 px-2 rounded"
+          >
+            Search
+          </button>
+        </div>
+      </form>
 
       {isLoading ? (
-        <h1>Loading...</h1>
+        <h1 className="text-2xl text-blue-500">Loading...</h1>
       ) : (
-        <div>
+        <div className="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {data.map((item, index) => (
-            <div key={index}>
-              <h1>{item.title}</h1>
-              <img src={item.urlToImage} alt={item.title} />
-              <p>{item.description}</p>
-              <p>{moment(item.publishedAt).format('MMMM Do YYYY, h:mm:ss a')}</p>
+            <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden">
+              <img 
+                src={item.urlToImage} 
+                alt={item.title} 
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
+                <p className="text-gray-600 mb-4">{item.description}</p>
+                <p className="text-sm text-gray-500">
+                  {moment(item.publishedAt).format('MMMM Do YYYY, h:mm:ss a')}
+                </p>
+              </div>
             </div>
           ))}
         </div>
