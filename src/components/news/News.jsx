@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from 'axios';
 import moment from 'moment';
 
@@ -7,15 +7,42 @@ function App() {
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+
+
+  useEffect(() => {
+
+    function getTrendingNews() {
+
+      axios.get(`http://api.mediastack.com/v1/news?access_key=f11c1c749f1417d1a64194720c56f082`)
+      .then(res => {
+        // Filter out articles with missing title, description, or image
+        const filteredData = res.data.data.filter(item => 
+          item.title && item.description && item.image
+        );
+        setData(filteredData);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.log(err);
+        setIsLoading(false);
+      });
+    }
+
+    getTrendingNews();
+
+  }, [])
+
+
+
   const getNews = (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    axios.get(`https://newsapi.org/v2/everything?q=${query}&apiKey=213f155b4dc84b68a2bbc6392211da8b`)
+    axios.get(`http://api.mediastack.com/v1/news?access_key=f11c1c749f1417d1a64194720c56f082&keywords=${query}`)
       .then(res => {
         // Filter out articles with missing title, description, or image
-        const filteredData = res.data.articles.filter(item => 
-          item.title && item.description && item.urlToImage
+        const filteredData = res.data.data.filter(item => 
+          item.title && item.description && item.image
         );
         setData(filteredData);
         setIsLoading(false);
@@ -55,7 +82,7 @@ function App() {
           {data.map((item, index) => (
             <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden">
               <img 
-                src={item.urlToImage} 
+                src={item.image} 
                 alt={item.title} 
                 className="w-full h-48 object-cover"
               />
@@ -63,7 +90,7 @@ function App() {
                 <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
                 <p className="text-gray-600 mb-4">{item.description}</p>
                 <p className="text-sm text-gray-500">
-                  {moment(item.publishedAt).format('MMMM Do YYYY, h:mm:ss a')}
+                  {moment(item.published_at).format('MMMM Do YYYY, h:mm:ss a')}
                 </p>
               </div>
             </div>
