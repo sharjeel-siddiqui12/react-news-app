@@ -2,12 +2,10 @@ import { useState, useEffect } from "react";
 import axios from 'axios';
 import moment from 'moment';
 
-function App() {
+function News() {
   const [data, setData] = useState([]);
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-
 
   useEffect(() => {
 
@@ -15,7 +13,6 @@ function App() {
 
       axios.get(`https://api.mediastack.com/v1/news?access_key=f11c1c749f1417d1a64194720c56f082`)
       .then(res => {
-        // Filter out articles with missing title, description, or image
         const filteredData = res.data.data.filter(item => 
           item.title && item.description && item.image
         );
@@ -33,14 +30,12 @@ function App() {
   }, [])
 
 
-
   const getNews = (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     axios.get(`https://api.mediastack.com/v1/news?access_key=f11c1c749f1417d1a64194720c56f082&keywords=${query}`)
       .then(res => {
-        // Filter out articles with missing title, description, or image
         const filteredData = res.data.data.filter(item => 
           item.title && item.description && item.image
         );
@@ -101,4 +96,4 @@ function App() {
   );
 }
 
-export default App;
+export default News;
