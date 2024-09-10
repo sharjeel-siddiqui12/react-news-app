@@ -1,6 +1,6 @@
 # React News App
 
-The project is React News App! This project is a web application built with React, designed to provide users with the latest news articles from various sources. 
+Welcome to the React News App! This project is a web application built with React, designed to provide users with the latest news articles from various sources. 
 
 ## Features
 
